@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#16202C" />
+  <meta name="aws-api-base" content="http://localhost:8000/api" />
+
+  <!-- ============ Primary SEO ============ -->
+  <title>ASC Pest Control | Commercial & Residential Pest Control, Gqeberha, Eastern Cape & Gauteng</title>
+  <meta name="description" content="ASC Pest Control delivers compliance-driven pest control & hospital-grade disinfection across Gqeberha (Port Elizabeth), the Eastern Cape and Gauteng. HACCP, BRCGS & FSSC 22000 audit-ready Integrated Pest Management for food & beverage, healthcare, hospitality and homes." />
+  <meta name="keywords" content="pest control Gqeberha, pest control Port Elizabeth, Eastern Cape pest control, Gauteng pest control, commercial pest control, food safety pest control, HACCP pest control, disinfection services, rodent control, cockroach control, termite control, IPM" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="ASC Pest Control Services" />
+  <link rel="canonical" href="https://ascpestcontrol.co.za/" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="apple-touch-icon" href="logo.png" />
+  <link rel="manifest" href="site.webmanifest" />
+
+  <!-- ============ Open Graph ============ -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="ASC Pest Control" />
+  <meta property="og:title" content="ASC Pest Control | Compliance-Driven Pest Control & Disinfection, Eastern Cape & Gauteng" />
+  <meta property="og:description" content="Audit-ready Integrated Pest Management & hospital-grade disinfection across Gqeberha, the wider Eastern Cape and Gauteng. Specialists in food & beverage and compliance-driven sectors." />
+  <meta property="og:url" content="https://ascpestcontrol.co.za/" />
+  <meta property="og:locale" content="en_ZA" />
+  <meta property="og:image" content="https://ascpestcontrol.co.za/logo.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="512" />
+  <meta property="og:image:height" content="512" />
+  <meta property="og:image:alt" content="ASC Pest Control logo" />
+
+  <!-- ============ Twitter ============ -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ASC Pest Control | Compliance-Driven Pest Control & Disinfection" />
+  <meta name="twitter:description" content="Audit-ready IPM & disinfection across Gqeberha, the Eastern Cape and Gauteng. Food & beverage compliance specialists." />
+  <meta name="twitter:image" content="https://ascpestcontrol.co.za/logo.png" />
+
+  <!-- ============ Fonts ============ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="assets/css/theme-red.css" />
+  <link rel="stylesheet" href="assets/css/quote-modal.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+
+  <style>
+    /* Sentinel launcher: use site logo as icon and tint via filter */
+    .sentinel-orb { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; overflow:hidden; }
+    .sentinel-orb img { width:100%; height:100%; object-fit:cover; /* tint: adjust hue-rotate to change colour */ filter: grayscale(1) sepia(1) saturate(4) hue-rotate(160deg) brightness(0.95); }
+    .sentinel-orb.sm { width:18px; height:18px; }
+
+    /* Hide inline launcher label and ensure launcher remains compact */
+    .sentinel-launcher { display:inline-flex; align-items:center; gap:0.5rem; padding:0.35rem 0.55rem; border-radius:999px; }
+    .sentinel-launcher-label { display: none; }
+
+    /* Centre the sentinel panel when visible */
+    #sentinel-panel:not([hidden]) {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 420px;
+      max-width: calc(100% - 32px);
+      z-index: 99999;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      background: var(--bg, #fff);
+      display: block;
+    }
+
+    /* Small screens: full-width modal appearance */
+    @media (max-width: 520px) {
+      #sentinel-panel:not([hidden]) { width: calc(100% - 24px); left: 50%; top: 50%; }
+    }
+
+    /* Sentinel panel styling */
+    .sentinel-panel { font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color: #eef2ff; }
+    .sentinel-messages { max-height: 380px; overflow: auto; padding: 1rem; display:flex; flex-direction:column; gap:0.6rem; background: rgba(255,255,255,.03); }
+    .msg.bot { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1); padding: 0.75rem 0.9rem; border-radius: 14px; align-self:flex-start; box-shadow: inset 0 0 0 1px rgba(255,255,255,.02); }
+    .msg.user { background: linear-gradient(135deg, #5c75ff, #3f53d9); padding: 0.7rem 0.9rem; border-radius: 18px; color: #fff; align-self:flex-end; }
+    .sentinel-sources { margin-top:0.5rem; font-size:0.85rem; color: rgba(255,255,255,.75); }
+    .sentinel-sources a { color: #8ab7ff; text-decoration: underline; }
+    .sentinel-output-dropdown { margin-top:0.6rem; }
+
+    /* Voice button */
+    .sentinel-voice { background: transparent; border: none; padding: 0.4rem; margin-right:0.25rem; display:inline-flex; align-items:center; justify-content:center; border-radius:8px; cursor:pointer; color: #fff; }
+    .sentinel-form { display:flex; gap:0.5rem; padding:0.85rem; border-top:1px solid rgba(255,255,255,.08); background: rgba(7,10,19,.92); }
+    .sentinel-input { flex:1; padding:0.8rem 0.95rem; border-radius:999px; border:1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.08); color: #fff; }
+    .sentinel-input::placeholder { color: rgba(255,255,255,.65); }
+    .sentinel-send { background: #5c75ff; color: #fff; border: none; padding:0.65rem; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; }
+  </style>
+
+  <!-- ============ Structured data: LocalBusiness ============ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "PestControlService",
+    "name": "ASC Pest Control Services",
+    "image": "https://ascpestcontrol.co.za/logo.png",
+    "url": "https://ascpestcontrol.co.za/",
+    "telephone": "+27611383989",
+    "email": "info@ascpestcontrol.co.za",
+    "priceRange": "$$",
+    "areaServed": ["Gqeberha", "Port Elizabeth", "Kariega", "Jeffrey's Bay", "Makhanda", "Port Alfred", "Addo", "Humansdorp", "Coega", "Eastern Cape", "Gauteng"],
+    "address": { "@type": "PostalAddress", "addressLocality": "Gqeberha (Port Elizabeth)", "addressRegion": "Eastern Cape", "addressCountry": "ZA" },
+    "sameAs": ["https://www.facebook.com/ASCPestControl"],
+    "description": "Commercial and industrial pest control and disinfection across the Eastern Cape, specialising in food & beverage operations with audit-ready, compliance-driven Integrated Pest Management."
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "Which pests do you handle?", "acceptedAnswer": { "@type": "Answer", "text": "Cockroaches (German & American), rodents (rats & mice), flies, ants, termites, bed bugs, fleas, mosquitoes, stored-product insects, pantry pests, spiders and occasional invaders." } },
+      { "@type": "Question", "name": "How quickly can you respond?", "acceptedAnswer": { "@type": "Answer", "text": "We prioritise urgent infestations and compliance-driven sites, with rapid response across Gqeberha and the surrounding Eastern Cape. Contact us on 061 138 3989 or WhatsApp for the soonest available slot." } },
+      { "@type": "Question", "name": "Are your treatments safe for my family, staff and food areas?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Our Integrated Pest Management approach uses targeted, registered products applied by trained technicians, with methods aligned to food-safety and infection-prevention standards." } },
+      { "@type": "Question", "name": "Do you provide compliance and audit documentation?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. We provide HACCP, BRCGS and FSSC 22000 audit support including site maps, device numbering, trend reports, corrective-action logs, service certificates and threshold-based escalation." } }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- Quote Modal Trigger Button (hidden, managed by JS) -->
+  <button id="openQuoteModal" style="display: none;"></button>
+
+  <!-- ============ Header ============ -->
+  <header class="header" id="header">
+    <div class="container nav">
+      <a class="brand" href="#top" aria-label="ASC Pest Control home">
+        <img src="logo.png" alt="ASC Pest Control logo" width="40" height="40" />
+        <span>ASC Pest Control<small></small></span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#services">Services</a>
+        <a href="#industries">Industries</a>
+        <a href="#compliance">Compliance</a>
+        <a href="#areas">Areas</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <div class="nav-cta">
+        <a class="nav-phone" href="tel:+27611383989">061 138 3989</a>
+        <button class="btn btn-primary magnetic" id="navQuoteBtn">Get a Quote</button>
+      </div>
+      <button class="burger" id="burger" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileMenu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <div>
+        <a href="#services">Services</a>
+        <a href="#industries">Industries</a>
+        <a href="#compliance">Compliance</a>
+        <a href="#areas">Service Areas</a>
+        <a href="#faq">FAQ</a>
+        <a class="btn btn-primary" href="#quote">Get a Quote</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <span id="top"></span>
+
+    <!-- ============ Hero ============ -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-bg">
+        <img src="assets/images/hero-pest-control.jpg" alt="Professional pest control technician applying treatment" class="hero-image" />
+      </div>
+    <div class="hero-signin-wrap">
+      <div class="container hero-signin-grid">
+        <div class="hero-signin-card">
+          <div class="hero-signin-copy">
+            <span class="hero-eyebrow">ASC Pest Control Hub</span>
+            <h2>Client portal for audit-ready pest control</h2>
+            <p>Sign in to access site reports, compliance documentation, service history and inspection records — all from one secure enterprise dashboard.</p>
+          </div>
+          <a href="signin.html" class="btn btn-primary magnetic hero-signin-btn">Sign in securely</a>
+        </div>
+        
+      </div>
+    </div>
+      <div class="container">
+        <div class="hero-content">
+          <div class="reveal">
+            <h1 id="hero-title">Pest control that's audit-ready, not just effective.</h1>
+            <p class="lead">
+              Commercial, industrial and residential pest management plus hospital-grade disinfection
+              across Gqeberha, the wider Eastern Cape and Gauteng. Engineered for food-safety compliance,
+              audited sites and evidence-backed Integrated Pest Management.
+            </p>
+            <div class="hero-cta">
+              <a class="btn btn-primary magnetic" href="#quote">Get a Free Quote</a>
+              <a class="btn btn-ghost" href="#services">Explore Services</a>
+              <button id="hero-talk-sentinel" class="btn btn-primary" type="button">Talk to Sentinel</button>
+            </div>
+            <div class="hero-stats-panel">
+              <div class="hero-stats">
+                <div class="stat"><strong data-count="3" data-suffix="">3</strong><span>Audit standards (HACCP · BRCGS · FSSC)</span></div>
+                <div class="stat"><strong data-count="15" data-suffix="+">15+</strong><span>Eastern Cape & Gauteng service areas</span></div>
+                <div class="stat"><strong>24/7</strong><span>Urgent response support</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="quote-card reveal" id="quote" aria-labelledby="quote-title">
+          <span class="eyebrow">Get started</span>
+          <h3 id="quote-title">Request a quote or book a service</h3>
+          <p class="muted">Choose the path that fits your facility or home — we respond fast with the right team.</p>
+          <div class="quote-choices">
+            <button type="button" class="quote-choice" data-open-modal="commercialModal">
+              <span class="qc-icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/></svg></span>
+              <span class="qc-text"><strong>Commercial &amp; Industrial</strong><small>Request an audit-ready quote</small></span>
+              <span class="qc-arrow"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+            </button>
+            <button type="button" class="quote-choice" data-open-modal="residentialModal">
+              <span class="qc-icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg></span>
+              <span class="qc-text"><strong>Residential</strong><small>Book a home service visit</small></span>
+              <span class="qc-arrow"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+            </button>
+          </div>
+          <ul class="quote-points" role="list">
+            <li>HACCP · BRCGS · FSSC 22000 aligned</li>
+            <li>POPIA-compliant · No obligation · Rapid response</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+
+    <div class="marquee" aria-label="Accreditations and standards">
+      <div class="marquee-panel">
+        <div class="marquee-summary">
+          <span class="marquee-eyebrow">Trusted by enterprise clients</span>
+          <p>Audit-ready pest control, compliance assurance and specialist coverage for regulated facilities.</p>
+        </div>
+        <div class="marquee-track-wrap">
+          <div class="marquee-track" id="marquee">
+            <span class="badge"><b>✓</b> HACCP aligned</span>
+            <span class="badge"><b>✓</b> BRCGS</span>
+            <span class="badge"><b>✓</b> FSSC 22000</span>
+            <span class="badge"><b>✓</b> Integrated Pest Management</span>
+            <span class="badge"><b>✓</b> Hospital-grade Disinfection</span>
+            <span class="badge"><b>✓</b> Food &amp; Beverage specialists</span>
+            <span class="badge"><b>✓</b> Audit documentation</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ About ============ -->
+    <section id="about">
+      <div class="container split">
+        <div class="reveal">
+          <span class="eyebrow">Who we are</span>
+          <h2>The Eastern Cape's compliance-first pest-management partner.</h2>
+          <p>
+            ASC Pest Control protects homes, businesses and regulated facilities across Nelson Mandela Bay,
+            the wider Eastern Cape and Gauteng. We specialise in <strong>food &amp; beverage operations</strong> —
+            processing plants, food-handling facilities, packaging, warehouses, cold-chain logistics and
+            distribution centres — where pests aren't just a nuisance, they're a compliance risk.
+          </p>
+          <p>
+            Our mission: to be the most trusted local pest-management partner in Nelson Mandela Bay by
+            combining science-led Integrated Pest Management with the documentation auditors expect.
+          </p>
+          <ul class="check-list" role="list">
+            <li>Inspection-led, evidence-based treatment plans</li>
+            <li>Audit-ready records for regulated sites</li>
+            <li>Residential &amp; commercial coverage across the Eastern Cape &amp; Gauteng</li>
+          </ul>
+        </div>
+        <figure class="about-figure reveal">
+          <img src="assets/images/IPM model.png" alt="ASC Pest Control — IPM model of continual improvement" loading="lazy" />
+          <figcaption>IPM — a closed loop of continual improvement</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============ Services (bento) ============ -->
+    <section id="services" class="bg-paper">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">What we do</span>
+          <h2>Comprehensive pest control &amp; disinfection</h2>
+          <p>Targeted treatment for every common pest, plus hospital-grade disinfection — all delivered under our Integrated Pest Management framework.</p>
+        </div>
+        <div class="bento reveal">
+          <article class="card feature">
+            <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c-4.6-1.6-7-4.9-7-9V6l7-3 7 3v6c0 4.1-2.4 7.4-7 9Z"/><path d="m9 12 2 2 4-4"/></svg></div>
+            <h3>Integrated Pest Management</h3>
+            <p>Not just spraying. We inspect, advise on sanitation, proof entry points, install monitoring devices, and apply targeted treatment — controlling pests with the least necessary intervention and full traceability.</p>
+            <a class="btn btn-primary magnetic" href="#quote" style="margin-top:1rem;">Book an inspection</a>
+          </article>
+          <article class="card"><div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 7.5 2.5"/><path d="M15 4l1.5-1.5"/><path d="M12 7a5 5 0 0 0-5 5v2a5 5 0 0 0 10 0v-2a5 5 0 0 0-5-5Z"/><path d="M12 12v8"/><path d="M7 11H3"/><path d="M7 14H4"/><path d="M7 17l-3 2"/><path d="M17 11h4"/><path d="M17 14h3"/><path d="M17 17l3 2"/></svg></div><h3>Cockroach Control</h3><p>German &amp; American cockroach elimination with gel baiting and proofing.</p></article>
+          <article class="card"><div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="11" r="3.2"/><circle cx="6.8" cy="8.3" r="1.5"/><circle cx="8.3" cy="10.6" r=".5" fill="currentColor" stroke="none"/><path d="M12 11.5c3.5 0 6.5 1.8 6.5 4.4A2 2 0 0 1 16.5 18H10"/><path d="M18.4 16c1.7-.2 2.8.7 3.1 2.2"/><path d="M6 12.6 3.6 13"/></svg></div><h3>Rodent Control</h3><p>Rats &amp; mice — numbered bait stations, trapping and entry-point proofing.</p></article>
+          <article class="card"><div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="14" rx="2.4" ry="3.8"/><circle cx="12" cy="8.4" r="2"/><path d="M10.6 7.2 9.2 5.7"/><path d="M13.4 7.2 14.8 5.7"/><path d="M9.6 12.2C6 10.4 3.6 11.4 3 14.2c2.7 1.4 5 .7 6.2-1.1"/><path d="M14.4 12.2c3.6-1.8 6-.8 6.6 2-2.7 1.4-5 .7-6.2-1.1"/></svg></div><h3>Fly Control</h3><p>EFK units, monitoring and source reduction for kitchens and food areas.</p></article>
+          <article class="card"><div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5.6" r="1.9"/><circle cx="12" cy="11" r="2.2"/><circle cx="12" cy="17.4" r="2.9"/><path d="M10.9 4.1 9.7 2.7"/><path d="M13.1 4.1 14.3 2.7"/><path d="M10 10.4 6.3 9"/><path d="M10 11.7 6.6 13.2"/><path d="M14 10.4 17.7 9"/><path d="M14 11.7 17.4 13.2"/></svg></div><h3>Ant Control</h3><p>Colony-level baiting and trail elimination.</p></article>
+          <article class="card"><div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1.8"/><path d="M10.8 3.8 9.7 2.7"/><path d="M13.2 3.8 14.3 2.7"/><rect x="9.6" y="6.8" width="4.8" height="11.4" rx="2.4"/><path d="M9.6 11h4.8"/><path d="M9.6 14h4.8"/><path d="M9.6 9.2 6.2 8.2"/><path d="M14.4 9.2 17.8 8.2"/><path d="M9.6 12.6 6.2 13.4"/><path d="M14.4 12.6 17.8 13.4"/><path d="M9.7 16 6.6 17.6"/><path d="M14.3 16 17.4 17.6"/></svg></div><h3>Termite Control</h3><p>Subterranean termite detection, mud-tube inspection and barriers.</p></article>
+          <article class="card"><div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg></div><h3>Bed Bug Control</h3><p>Thorough inspection, treatment and follow-up verification.</p></article>
+          <article class="card"><div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h.01"/><path d="M7 5h.01"/><path d="M11 7h.01"/><path d="M3 7h.01"/><path d="M7 9h.01"/><path d="M3 11h.01"/><rect width="4" height="4" x="15" y="5"/><path d="m19 9 1 1v9a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-9l1-1"/><path d="M13 14h6"/></svg></div><h3>Disinfection</h3><p>Hospital-grade and commercial disinfection across all sectors.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Industries ============ -->
+    <section id="industries" class="industries">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Industries we transform</span>
+          <h2>Built for compliance-driven sectors</h2>
+          <p>From food plants to hospitals, we tailor programmes to the standards your auditors hold you to.</p>
+        </div>
+        <div class="grid grid-3 reveal">
+          <article class="ind-card">
+            <div class="ind-media"><img src="assets/images/industries/food-beverage.svg" alt="Food and beverage operations" loading="lazy" /></div>
+            <div class="ind-body"><h3>Food &amp; Beverage</h3><p>Processing, food handling, packaging, cold-chain, warehousing and distribution.</p></div>
+          </article>
+          <article class="ind-card">
+            <div class="ind-media"><img src="assets/images/industries/healthcare.svg" alt="Healthcare facilities" loading="lazy" /></div>
+            <div class="ind-body"><h3>Healthcare</h3><p>Hospitals and clinics needing strict infection-prevention standards.</p></div>
+          </article>
+          <article class="ind-card">
+            <div class="ind-media"><img src="assets/images/industries/hospitality.svg" alt="Hospitality venues" loading="lazy" /></div>
+            <div class="ind-body"><h3>Hospitality</h3><p>Hotels, lodges and restaurants protecting guest experience and reputation.</p></div>
+          </article>
+          <article class="ind-card">
+            <div class="ind-media"><img src="assets/images/industries/education.svg" alt="Education campuses" loading="lazy" /></div>
+            <div class="ind-body"><h3>Education</h3><p>Schools and universities maintaining safe, pest-free environments.</p></div>
+          </article>
+          <article class="ind-card">
+            <div class="ind-media"><img src="assets/images/industries/corporate.svg" alt="Corporate offices" loading="lazy" /></div>
+            <div class="ind-body"><h3>Corporate</h3><p>Offices and commercial premises with discreet, scheduled programmes.</p></div>
+          </article>
+          <article class="ind-card">
+            <div class="ind-media"><img src="assets/images/industries/retail.svg" alt="Retail and public spaces" loading="lazy" /></div>
+            <div class="ind-body"><h3>Retail &amp; Public</h3><p>Stores, malls and public facilities with high footfall.</p></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Plans ============ -->
+    <section id="plans" class="bg-paper">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Service plans</span>
+          <h2>Once-off or ongoing — your call</h2>
+          <p>From a single knockdown treatment to fully managed maintenance programmes with reporting.</p>
+        </div>
+        <div class="grid grid-3 reveal">
+          <article class="card plan">
+            <h3>Once-Off Knockdown</h3>
+            <div class="price">Single targeted treatment</div>
+            <ul role="list">
+              <li>Inspection &amp; assessment</li>
+              <li>Targeted treatment for the problem pest</li>
+              <li>Practical prevention advice</li>
+            </ul>
+            <a class="btn btn-outline" href="#quote">Get a quote</a>
+          </article>
+          <article class="card plan featured">
+            <h3>Ongoing Maintenance</h3>
+            <div class="price">Monthly · Bi-monthly · Quarterly · Annual</div>
+            <ul role="list">
+              <li>Scheduled recurring visits</li>
+              <li>Monitoring devices &amp; trend tracking</li>
+              <li>Service certificates each visit</li>
+              <li>Priority response between visits</li>
+            </ul>
+            <a class="btn btn-primary magnetic" href="#quote">Start a plan</a>
+          </article>
+          <article class="card plan">
+            <h3>Compliance Programme</h3>
+            <div class="price">For regulated &amp; audited sites</div>
+            <ul role="list">
+              <li>HACCP / BRCGS / FSSC 22000 support</li>
+              <li>Site maps &amp; numbered devices</li>
+              <li>Corrective-action logs &amp; escalation</li>
+              <li>Audit-ready documentation pack</li>
+            </ul>
+            <a class="btn btn-outline" href="#quote">Talk to us</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Compliance band ============ -->
+    <section id="compliance">
+      <div class="container">
+        <div class="compliance reveal">
+          <div class="compliance-layout">
+            <div class="compliance-content">
+              <span class="eyebrow">Compliance &amp; audit support</span>
+              <h2>Documentation your auditors expect</h2>
+              <p>For food, healthcare and other regulated sites, evidence matters as much as treatment. We deliver the records that prove your pest-management programme is in control.</p>
+              <div class="compliance-grid">
+                <div class="ci"><div><strong>Site maps &amp; device numbering</strong><p>Every bait station and monitor mapped and uniquely numbered.</p></div></div>
+                <div class="ci"><div><strong>Trend reports</strong><p>Activity tracked over time to show control and catch issues early.</p></div></div>
+                <div class="ci"><div><strong>Corrective-action logs</strong><p>Documented actions and outcomes for every finding.</p></div></div>
+                <div class="ci"><div><strong>Service certificates</strong><p>Proof-of-service records issued after each visit.</p></div></div>
+                <div class="ci"><div><strong>Threshold-based escalation</strong><p>Defined trigger levels that escalate response automatically.</p></div></div>
+                <div class="ci"><div><strong>HACCP · BRCGS · FSSC 22000</strong><p>Programmes aligned to leading food-safety standards.</p></div></div>
+              </div>
+            </div>
+            <figure class="compliance-figure">
+              <img src="assets/images/compliance-docs.svg" alt="Audit-ready compliance documentation pack with service certificates and checklists" loading="lazy" />
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Service areas ============ -->
+    <section id="areas">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Where we work</span>
+          <h2>Serving Nelson Mandela Bay, the Eastern Cape &amp; Gauteng</h2>
+          <p>Based in Gqeberha, covering the metro, Eastern Cape towns, Gauteng support and industrial hubs.</p>
+        </div>
+        <div class="areas-list reveal">
+          <span class="area-pill">Gqeberha (Port Elizabeth)</span>
+          <span class="area-pill">Kariega (Uitenhage)</span>
+          <span class="area-pill">Despatch</span>
+          <span class="area-pill">Colchester</span>
+          <span class="area-pill">Jeffrey's Bay</span>
+          <span class="area-pill">Humansdorp</span>
+          <span class="area-pill">Hankey</span>
+          <span class="area-pill">Patensie</span>
+          <span class="area-pill">Kirkwood</span>
+          <span class="area-pill">Addo</span>
+          <span class="area-pill">Paterson</span>
+          <span class="area-pill">Alexandria</span>
+          <span class="area-pill">Port Alfred</span>
+          <span class="area-pill">Makhanda (Grahamstown)</span>
+          <span class="area-pill">Thornhill</span>
+          <span class="area-pill">Coega &amp; industrial hubs</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FAQ (native details/summary) ============ -->
+    <section id="faq" class="bg-paper">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Questions, answered</span>
+          <h2>Frequently asked questions</h2>
+        </div>
+        <div class="faq reveal">
+          <details><summary>Which pests do you handle?<span class="ico" aria-hidden="true"></span></summary><div class="ans"><p>Cockroaches (German &amp; American), rodents (rats &amp; mice), flies, ants, termites, bed bugs, fleas, mosquitoes, stored-product insects (moths, beetles), pantry pests, spiders and occasional invaders.</p></div></details>
+          <details><summary>How quickly can you respond?<span class="ico" aria-hidden="true"></span></summary><div class="ans"><p>We prioritise urgent infestations and compliance-driven sites, with rapid response across Gqeberha and the surrounding Eastern Cape. Call <a href="tel:+27611383989">061 138 3989</a> or WhatsApp us for the soonest available slot.</p></div></details>
+          <details><summary>Are your treatments safe for family, staff and food areas?<span class="ico" aria-hidden="true"></span></summary><div class="ans"><p>Yes. Our Integrated Pest Management approach uses targeted, registered products applied by trained technicians, with methods aligned to food-safety and infection-prevention standards.</p></div></details>
+          <details><summary>How should I prepare for a treatment?<span class="ico" aria-hidden="true"></span></summary><div class="ans"><p>We'll give you simple, specific prep steps when you book — typically clearing access to affected areas. For food sites we coordinate around your production schedule.</p></div></details>
+          <details><summary>Do you offer ongoing maintenance plans?<span class="ico" aria-hidden="true"></span></summary><div class="ans"><p>Yes — monthly, bi-monthly, quarterly and annual plans with monitoring, trend reporting and service certificates, plus priority response between visits.</p></div></details>
+          <details><summary>What is Integrated Pest Management (IPM)?<span class="ico" aria-hidden="true"></span></summary><div class="ans"><p>IPM is a science-led approach combining inspection, sanitation advice, proofing, monitoring devices and targeted treatment — controlling pests with the least necessary intervention.</p></div></details>
+          <details><summary>Can you support our HACCP / BRCGS / FSSC 22000 audit?<span class="ico" aria-hidden="true"></span></summary><div class="ans"><p>Absolutely. We provide site maps, numbered devices, trend reports, corrective-action logs, service certificates and threshold-based escalation — the documentation auditors expect.</p></div></details>
+          <details><summary>What are the signs of termites?<span class="ico" aria-hidden="true"></span></summary><div class="ans"><p>Hollow-sounding wood, mud tubes along walls or foundations, discarded wings and tight-fitting doors. If you notice these, book an inspection promptly to limit damage.</p></div></details>
+          <details><summary>Which areas do you cover?<span class="ico" aria-hidden="true"></span></summary><div class="ans"><p>Gqeberha and the wider Eastern Cape — including Kariega, Despatch, Jeffrey's Bay, Humansdorp, Addo, Port Alfred, Makhanda, Coega and surrounding industrial hubs.</p></div></details>
+          <details><summary>How do I book?<span class="ico" aria-hidden="true"></span></summary><div class="ans"><p>Use the quote form on this page, call <a href="tel:+27611383989">061 138 3989</a>, message us on WhatsApp, or email <a href="mailto:info@ascpestcontrol.co.za">info@ascpestcontrol.co.za</a>.</p></div></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CTA band ============ -->
+    <section id="book">
+      <div class="container">
+        <div class="cta-band reveal">
+          <h2>Ready to take back control?</h2>
+          <p>Get a fast, no-obligation quote for your home, business or compliance-driven site in the Eastern Cape.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary magnetic" href="#quote">Get a Free Quote</a>
+            <a class="btn btn-wa" href="https://wa.me/27611383989" rel="noopener">WhatsApp Us</a>
+            <a class="btn btn-light" href="tel:+27611383989">Call 061 138 3989</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ Footer ============ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="grid-foot">
+        <div>
+          <div class="brand">
+            <img src="logo.png" alt="ASC Pest Control logo" width="40" height="40" style="border-radius:11px;" />
+            <span>ASC Pest Control<small style="display:block;color:var(--ink-300);">Eastern Cape · IPM &amp; Disinfection</small></span>
+          </div>
+          <p style="color:var(--ink-500);">Compliance-driven pest control and hospital-grade disinfection across Gqeberha and the wider Eastern Cape, South Africa.</p>
+        </div>
+        <div>
+          <h4>Services</h4>
+          <ul role="list">
+            <li><a href="#services">Cockroach Control</a></li>
+            <li><a href="#services">Rodent Control</a></li>
+            <li><a href="#services">Termite Control</a></li>
+            <li><a href="#services">Bed Bug Control</a></li>
+            <li><a href="#services">Disinfection Services</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Company</h4>
+          <ul role="list">
+            <li><a href="#about">About</a></li>
+            <li><a href="#industries">Industries</a></li>
+            <li><a href="#compliance">Compliance</a></li>
+            <li><a href="#areas">Service Areas</a></li>
+            <li><a href="#faq">FAQ</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul role="list" class="foot-contact">
+            <li>
+              <svg class="icon icon-phone" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.86 19.86 0 0 1 3 5.18 2 2 0 0 1 5 3h3a2 2 0 0 1 2 1.72c.12 1.05.5 2.05 1.12 2.95a2 2 0 0 1-.45 2.1L10.6 11.4a16 16 0 0 0 6 6l1.63-1.07a2 2 0 0 1 2.10-.45c.9.62 1.9 1 2.95 1.12A2 2 0 0 1 22 16.92z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <a href="tel:+27611383989">061 138 3989</a>
+            </li>
+            <li>
+              <svg class="icon icon-chat" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <a href="https://wa.me/27611383989" rel="noopener">WhatsApp: 061 138 3989</a>
+            </li>
+            <li>
+              <svg class="icon icon-mail" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+                <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.2" fill="none" />
+                <path d="M22 6l-10 7L2 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <a href="mailto:info@ascpestcontrol.co.za">info@ascpestcontrol.co.za</a>
+            </li>
+            <li>
+              <svg class="icon icon-map" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                <circle cx="12" cy="10" r="2.5" fill="currentColor" />
+              </svg>
+              Gqeberha (Port Elizabeth), Eastern Cape
+            </li>
+            <li>
+              <svg class="icon icon-link" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+                <path d="M10 14a5 5 0 0 0 7.07 0l1.41-1.41a5 5 0 0 0-7.07-7.07L10 6.93" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M14 10a5 5 0 0 0-7.07 0L5.52 11.41a5 5 0 0 0 7.07 7.07L14 17.07" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <a href="https://www.facebook.com/ASCPestControl" rel="noopener">Facebook: ASC Pest Control</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span id="year"></span> ASC Pest Control Services. All rights reserved.</span>
+        <span>Gqeberha · Nelson Mandela Bay · Eastern Cape, South Africa</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="float-actions">
+    <a class="fab fab-wa" href="https://wa.me/27611383989" aria-label="WhatsApp ASC Pest Control" rel="noopener">
+      <svg class="icon icon-chat" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </a>
+    <a class="fab fab-call" href="tel:+27611383989" aria-label="Call ASC Pest Control">
+      <svg class="icon icon-phone" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.86 19.86 0 0 1 3 5.18 2 2 0 0 1 5 3h3a2 2 0 0 1 2 1.72c.12 1.05.5 2.05 1.12 2.95a2 2 0 0 1-.45 2.1L10.6 11.4a16 16 0 0 0 6 6l1.63-1.07a2 2 0 0 1 2.10-.45c.9.62 1.9 1 2.95 1.12A2 2 0 0 1 22 16.92z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </a>
+  </div>
+
+  <!-- ============ Sentinel — AI assistant ============ -->
+  <div id="sentinel" class="sentinel" data-open="false">
+    <!-- Launcher -->
+    <button id="sentinel-launcher" class="sentinel-launcher" aria-expanded="false" aria-controls="sentinel-panel"
+            aria-label="Chat with Sentinel, the ASC Pest Control assistant">
+      <span class="sentinel-orb" aria-hidden="true">
+        <img src="logo.png" alt="" aria-hidden="true" />
+      </span>
+      <span class="sentinel-ping" aria-hidden="true"></span>
+    </button>
+
+    <!-- Panel -->
+    <section id="sentinel-panel" class="sentinel-panel" role="dialog" aria-modal="false"
+             aria-labelledby="sentinel-title" hidden>
+      <header class="sentinel-head" id="sentinel-drag-handle">
+        <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1;">
+          <span class="sentinel-orb sm" aria-hidden="true">
+            <img src="logo.png" alt="" aria-hidden="true" />
+          </span>
+          <div class="sentinel-id">
+            <strong id="sentinel-title">Sentinel</strong>
+            <small><span class="sentinel-status-dot"></span> Live enterprise support for ASC Pest Control</small>
+          </div>
+        </div>
+        <button id="sentinel-minimize" class="sentinel-icon-btn" aria-label="Minimize chat" title="Minimize">−</button>
+        <button id="sentinel-close" class="sentinel-close" aria-label="Close chat">✕</button>
+      </header>
+
+      <div id="sentinel-messages" class="sentinel-messages" role="log" aria-live="polite" aria-atomic="false"></div>
+
+      <form id="sentinel-form" class="sentinel-form" autocomplete="off">
+        <input id="sentinel-input" class="sentinel-input" type="text" name="message"
+               placeholder="Type your enquiry, request a quote, or ask about enterprise services…" maxlength="1000" aria-label="Type your message" required />
+        <button id="sentinel-voice" type="button" class="sentinel-voice" title="Speak" aria-label="Start voice input">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v11"/><path d="M19 11v2a7 7 0 0 1-14 0v-2"/><path d="M8 21h8"/></svg>
+        </button>
+        <button class="sentinel-send" type="submit" aria-label="Send">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+        </button>
+      </form>
+      <p class="sentinel-disclaimer">Sentinel only assists with ASC services. Chats are stored to handle your enquiry (POPIA).</p>
+    </section>
+  </div>
+
+  <!-- Account Creation Modal -->
+  <div id="accountModal" class="modal" style="display: none;">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <button class="modal-close" id="closeAccountModal">✕</button>
+      <h2>Create your account</h2>
+      <p>You'll need an account to complete your booking. It's quick and secure.</p>
+      <form id="accountForm" novalidate>
+        <div class="field"><label for="accUsername">Username *</label><input id="accUsername" name="username" type="text" required placeholder="Choose a username" /></div>
+        <div class="field"><label for="accPassword">Password *</label><input id="accPassword" name="password" type="password" required placeholder="Min 8 characters" /></div>
+        <div class="field"><label for="accPasswordConfirm">Confirm Password *</label><input id="accPasswordConfirm" name="passwordConfirm" type="password" required placeholder="Repeat password" /></div>
+        <button type="submit" class="btn btn-primary">Create account & continue</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- OTP Verification Modal -->
+  <div id="otpModal" class="modal" style="display: none;">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <h2>Verify your email</h2>
+      <p id="otpMessage">We've sent an OTP to your email. Enter it below:</p>
+      <form id="otpForm" novalidate>
+        <div class="field"><label for="otpCode">One-Time Password (OTP) *</label><input id="otpCode" name="otp" type="text" required placeholder="6-digit code" maxlength="6" /></div>
+        <button type="submit" class="btn btn-primary">Verify & confirm</button>
+        <p style="font-size: 0.85rem; color: var(--muted); margin-top: 1rem;"><a href="#" id="resendOtp">Resend OTP</a></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ Commercial / Industrial quote modal ============ -->
+  <div class="amodal" id="commercialModal" hidden role="dialog" aria-modal="true" aria-labelledby="commModalTitle">
+    <div class="amodal-backdrop" data-close-modal></div>
+    <div class="amodal-dialog">
+      <button type="button" class="amodal-close" data-close-modal aria-label="Close">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+      <header class="amodal-head">
+        <span class="eyebrow">Commercial &amp; Industrial</span>
+        <h3 id="commModalTitle">Request a quote</h3>
+        <p>For facilities and regulated sites — we reply with an audit-ready proposal.</p>
+      </header>
+      <div class="amodal-body">
+        <form id="commercialForm" novalidate>
+          <fieldset class="field choice-field">
+            <legend>Client Type *</legend>
+            <div class="choice-row">
+              <label class="choice-card"><input type="radio" name="clientType" value="commercial" required /><span>Commercial</span></label>
+              <label class="choice-card"><input type="radio" name="clientType" value="industrial" /><span>Industrial</span></label>
+            </div>
+          </fieldset>
+
+          <div class="field"><label for="orgName">Organization Name *</label><input id="orgName" name="orgName" type="text" required /></div>
+          <div class="field-row">
+            <div class="field"><label for="contactName">Contact Name *</label><input id="contactName" name="contactName" type="text" required /></div>
+            <div class="field"><label for="contactEmail">Email *</label><input id="contactEmail" name="contactEmail" type="email" required placeholder="to confirm your request" /></div>
+          </div>
+          <div class="field"><label for="contactPhone">Telephone *</label><input id="contactPhone" name="contactPhone" type="tel" required placeholder="061 138 3989" /></div>
+
+          <fieldset class="field services-field">
+            <legend>Services Required * <span class="legend-note">(tick all that apply)</span></legend>
+            <div class="service-ticks">
+              <label class="tick"><input type="checkbox" name="services" value="integrated-ipm" /><span>Integrated Pest Management</span></label>
+              <label class="tick"><input type="checkbox" name="services" value="cockroach-control" /><span>Cockroach Control</span></label>
+              <label class="tick"><input type="checkbox" name="services" value="rodent-control" /><span>Rodent Control</span></label>
+              <label class="tick"><input type="checkbox" name="services" value="fly-control" /><span>Fly Control</span></label>
+              <label class="tick"><input type="checkbox" name="services" value="ant-control" /><span>Ant Control</span></label>
+              <label class="tick"><input type="checkbox" name="services" value="termite-control" /><span>Termite Control</span></label>
+              <label class="tick"><input type="checkbox" name="services" value="bed-bug-control" /><span>Bed Bug Control</span></label>
+              <label class="tick"><input type="checkbox" name="services" value="disinfection" /><span>Hospital-Grade Disinfection</span></label>
+              <label class="tick"><input type="checkbox" name="services" value="monitoring" /><span>Monitoring &amp; Audit Support</span></label>
+            </div>
+          </fieldset>
+
+          <div class="field">
+            <label for="commAddress">Location / Address *</label>
+            <div class="addr-row">
+              <input id="commAddress" name="address" type="text" placeholder="Type your facility address…" autocomplete="street-address" required />
+              <button type="button" class="btn btn-outline addr-find" data-geocode="commercial">Find</button>
+            </div>
+            <div class="location-tools">
+              <button type="button" class="btn btn-outline loc-btn" data-locate="commercial">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span class="loc-label">Use current location</span>
+              </button>
+              <span class="loc-hint">or click the map to drop a pin</span>
+            </div>
+            <div id="mapCommercial" class="leaflet-map"></div>
+            <input type="hidden" id="commLat" name="latitude" />
+            <input type="hidden" id="commLng" name="longitude" />
+          </div>
+
+          <div class="field"><label for="additionalInfo">Additional Details</label><textarea id="additionalInfo" name="additionalInfo" rows="3" placeholder="Any specific pest issues, facility size, or other details?"></textarea></div>
+          <div class="field-check">
+            <label><input type="checkbox" name="existingCustomer" /> I am an existing customer</label>
+            <label><input type="checkbox" name="wantMarketing" /> I want to receive marketing communications</label>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;">Request a Quote</button>
+          <p class="reassure">No obligation · We reply fast · Your details stay private (POPIA)</p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ Residential booking modal ============ -->
+  <div class="amodal" id="residentialModal" hidden role="dialog" aria-modal="true" aria-labelledby="resModalTitle">
+    <div class="amodal-backdrop" data-close-modal></div>
+    <div class="amodal-dialog">
+      <button type="button" class="amodal-close" data-close-modal aria-label="Close">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+      <header class="amodal-head">
+        <span class="eyebrow">Residential</span>
+        <h3 id="resModalTitle">Book a home service</h3>
+        <p>Tell us about your home and when suits — we'll confirm your visit.</p>
+      </header>
+      <div class="amodal-body">
+        <form id="residentialForm" novalidate>
+          <div class="field-row">
+            <div class="field"><label for="resName">Name *</label><input id="resName" name="firstName" type="text" required /></div>
+            <div class="field"><label for="resSurname">Surname *</label><input id="resSurname" name="lastName" type="text" required /></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label for="resEmail">Email *</label><input id="resEmail" name="email" type="email" required /></div>
+            <div class="field"><label for="resPhone">Cell Number *</label><input id="resPhone" name="phone" type="tel" required placeholder="082 123 4567" /></div>
+          </div>
+
+          <fieldset class="field services-field">
+            <legend>Services Required * <span class="legend-note">(tick all that apply)</span></legend>
+            <div class="service-ticks">
+              <label class="tick"><input type="checkbox" name="services" value="cockroach-control" /><span>Cockroach Control</span></label>
+              <label class="tick"><input type="checkbox" name="services" value="rodent-control" /><span>Rodent Control</span></label>
+              <label class="tick"><input type="checkbox" name="services" value="fly-control" /><span>Fly Control</span></label>
+              <label class="tick"><input type="checkbox" name="services" value="ant-control" /><span>Ant Control</span></label>
+              <label class="tick"><input type="checkbox" name="services" value="termite-control" /><span>Termite Control</span></label>
+              <label class="tick"><input type="checkbox" name="services" value="bed-bug-control" /><span>Bed Bug Control</span></label>
+              <label class="tick"><input type="checkbox" name="services" value="flea-control" /><span>Flea Control</span></label>
+              <label class="tick"><input type="checkbox" name="services" value="disinfection" /><span>Disinfection</span></label>
+              <label class="tick"><input type="checkbox" name="services" value="general" /><span>General Pest Control</span></label>
+            </div>
+          </fieldset>
+
+          <div class="field-row">
+            <div class="field"><label for="resDate">Preferred Date *</label><input id="resDate" name="date" type="date" required /></div>
+            <div class="field"><label for="resTime">Preferred Time *</label><input id="resTime" name="time" type="time" required /></div>
+          </div>
+
+          <div class="field"><label for="resNotes">Notes</label><textarea id="resNotes" name="notes" rows="3" placeholder="Describe the problem, access details, pets on site, etc."></textarea></div>
+
+          <div class="field">
+            <label for="resFiles">Documents / Images <span class="legend-note">(optional)</span></label>
+            <label class="upload-drop" for="resFiles" id="resDrop">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5-5 5 5"/><path d="M12 5v12"/></svg>
+              <span>Drop files here or <b>browse</b> — photos of the issue, plans or a prior quote</span>
+              <input id="resFiles" name="files" type="file" multiple accept="image/*,.pdf" hidden />
+            </label>
+            <ul class="upload-list" id="resFileList"></ul>
+          </div>
+
+          <div class="field">
+            <label for="resAddress">Location / Address *</label>
+            <div class="addr-row">
+              <input id="resAddress" name="address" type="text" placeholder="Type your home address…" autocomplete="street-address" required />
+              <button type="button" class="btn btn-outline addr-find" data-geocode="residential">Find</button>
+            </div>
+            <div class="location-tools">
+              <button type="button" class="btn btn-outline loc-btn" data-locate="residential">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span class="loc-label">Use current location</span>
+              </button>
+              <span class="loc-hint">or click the map to drop a pin</span>
+            </div>
+            <div id="mapResidential" class="leaflet-map"></div>
+            <input type="hidden" id="resLat" name="latitude" />
+            <input type="hidden" id="resLng" name="longitude" />
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width:100%;">Book my service</button>
+          <p class="reassure">No obligation · We reply fast · Your details stay private (POPIA)</p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Configure where Sentinel persists conversations. Same-origin in production;
+    // local API for the dev server. Falls back to an on-page demo engine if unreachable.
+    window.ASC_API_BASE = (location.protocol === "file:" || location.port === "8080")
+      ? "http://127.0.0.1:8000"
+      : location.origin;
+  </script>
+  <script src="assets/js/main.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" defer></script>
+  <script src="assets/js/map-form.js" defer></script>
+  <script src="assets/js/assistant.js" defer></script>
+  <!-- quote-modal.js removed: the hero quote flow (overlay reveal + Leaflet map) is handled by map-form.js -->
+</body>
+</html>

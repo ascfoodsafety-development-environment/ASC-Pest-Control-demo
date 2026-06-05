@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#16202C" />
+  <meta name="aws-api-base" content="http://localhost:8000/api" />
+  <title>ASC Pest Control | Master Dashboard</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="assets/css/theme-red.css" />
+  <style>
+    body { margin: 0; min-height: 100vh; background: #08101d; color: #eef2ff; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .layout-shell { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 1.5rem; padding: 1.5rem; max-width: 1680px; margin: 0 auto; }
+    .sidebar { position: sticky; top: 1.5rem; align-self: start; min-height: calc(100vh - 3rem); padding: 2rem 1.5rem; border-radius: 1.5rem; background: rgba(8, 16, 29, 0.96); border: 1px solid rgba(255,255,255,0.08); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02); }
+    .sidebar .brand { display: inline-flex; align-items: center; gap: 0.85rem; margin-bottom: 2rem; color: #fff; text-decoration: none; }
+    .sidebar .brand img { width: 44px; height: 44px; border-radius: 14px; object-fit: cover; }
+    .sidebar h2 { margin: 0 0 1rem; font-size: 0.98rem; letter-spacing: 0.16em; text-transform: uppercase; color: #8fa0c2; }
+    .sidebar nav { display: grid; gap: 0.65rem; }
+    .sidebar a { display: inline-flex; align-items: center; gap: 0.75rem; padding: 0.95rem 1rem; border-radius: 1rem; color: #c7d0e6; text-decoration: none; background: rgba(255,255,255,0.03); transition: background 0.2s ease, transform 0.2s ease; }
+    .sidebar a:hover { background: rgba(92, 117, 255, 0.16); transform: translateX(2px); }
+    .sidebar a.active { background: rgba(92, 117, 255, 0.22); color: #fff; }
+    .sidebar a span { font-size: 0.95rem; }
+
+    .page-wrapper { display: grid; gap: 1.5rem; }
+    .dashboard-section { padding: 1.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .dashboard-section:last-of-type { border-bottom: none; }
+    .dashboard-header { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .page-title { margin: 0; font-size: clamp(2rem, 2.8vw, 3.2rem); line-height: 1.02; letter-spacing: -0.03em; }
+    .page-description { margin: 0.75rem 0 0; max-width: 62rem; color: #9ab3d9; font-size: 1rem; line-height: 1.8; }
+    .dashboard-meta { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
+    .meta-pill, .btn-toolbar { border-radius: 999px; border: 1px solid rgba(255,255,255,0.12); padding: 0.85rem 1rem; background: rgba(255,255,255,0.04); color: #e8ecff; font-size: 0.92rem; }
+    .btn-toolbar { cursor: pointer; transition: transform 0.2s ease, background 0.2s ease; }
+    .btn-toolbar:hover { transform: translateY(-1px); background: rgba(92,117,255,0.16); }
+
+    .metric-row { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top: 1rem; }
+    .dashboard-card { position: relative; border-radius: 1.5rem; padding: 1.6rem 1.75rem; background: rgba(13, 23, 39, 0.96); border: 1px solid rgba(255,255,255,0.08); overflow: hidden; }
+    .dashboard-card::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,255,255,0.04), transparent 40%); pointer-events: none; }
+    .dashboard-card .label { position: relative; display: block; color: #8fa0c2; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.18em; margin-bottom: 1rem; }
+    .dashboard-card .value { position: relative; margin: 0; font-size: clamp(2rem, 3vw, 2.8rem); font-weight: 800; line-height: 1; }
+    .dashboard-card .detail { position: relative; margin-top: 0.85rem; color: #9ab3d9; font-size: 0.92rem; line-height: 1.6; }
+
+    .dashboard-grid { display: grid; gap: 1.25rem; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 0.5rem; }
+    .dashboard-panel { border-radius: 1.5rem; padding: 1.75rem; background: rgba(8, 16, 29, 0.96); border: 1px solid rgba(255,255,255,0.08); }
+    .dashboard-panel h2 { margin: 0 0 1rem; font-size: 1.18rem; font-weight: 700; }
+    .dashboard-panel .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+    .dashboard-panel .section-heading .section-note { color: #94a4cc; font-size: 0.95rem; }
+    .dashboard-panel pre { margin: 0; white-space: pre-wrap; font-size: 0.95rem; color: #d8dee9; min-height: 14rem; }
+
+    .dashboard-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; background: rgba(255,255,255,0.02); border-radius: 1.25rem; overflow: hidden; }
+    .dashboard-table th, .dashboard-table td { padding: 1rem 1.1rem; text-align: left; }
+    .dashboard-table th { color: #94a4cc; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.16em; border-bottom: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); }
+    .dashboard-table td { color: #e9edf8; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .dashboard-table tbody tr:hover { background: rgba(255,255,255,0.04); }
+    .dashboard-table tbody tr:last-child td { border-bottom: none; }
+
+    .badge { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.35rem 0.75rem; border-radius: 999px; background: rgba(92, 117, 255, 0.16); color: #dbe2ff; font-size: 0.85rem; }
+    .status-new { color: #7ee787; }
+    .status-draft { color: #68b0ff; }
+    .status-other { color: #f7c26b; }
+    .hint { color: #8fa0c2; margin-top: 0.75rem; }
+
+    @media (max-width: 64rem) {
+      .layout-shell { grid-template-columns: 1fr; padding: 1rem; }
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .dashboard-header { flex-direction: column; align-items: stretch; }
+      .dashboard-meta { justify-content: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout-shell">
+    <aside class="sidebar">
+      <a class="brand" href="index.html" aria-label="ASC Pest Control home">
+        <img src="logo.png" alt="ASC Pest Control logo" />
+        <span>ASC Pest Control</span>
+      </a>
+      <h2>Navigation</h2>
+      <nav aria-label="Dashboard navigation">
+        <a class="active" href="#overview"><span>Overview</span></a>
+        <a href="#lead-pipeline"><span>Lead pipeline</span></a>
+        <a href="#calendar"><span>Calendar</span></a>
+        <a href="#clients"><span>Clients</span></a>
+        <a href="#organizations"><span>Organizations</span></a>
+        <a href="#technicians"><span>Technicians</span></a>
+        <a href="#reports"><span>Reports</span></a>
+      </nav>
+    </aside>
+
+    <main class="page-wrapper">
+      <section class="dashboard-section" id="overview">
+        <header class="dashboard-header">
+          <div>
+            <p class="meta-pill">Enterprise operations</p>
+            <h1 class="page-title">Master operations dashboard</h1>
+            <p class="page-description">A unified view of lead performance, quote activity, bookings, billing, clients and field operations across the ASC Pest Control enterprise.</p>
+          </div>
+          <div class="dashboard-meta">
+            <span class="meta-pill">Updated just now</span>
+            <button class="btn-toolbar" type="button">Refresh metrics</button>
+            <button class="btn-toolbar" type="button">Export report</button>
+          </div>
+        </header>
+
+        <section class="metric-row">
+          <article class="dashboard-card">
+            <span class="label">Leads this week</span>
+            <p class="value" id="totalLeads">—</p>
+            <p class="detail">Pipeline inflow for the last seven days.</p>
+          </article>
+        <article class="dashboard-card">
+          <span class="label">Bookings today</span>
+          <p class="value" id="bookingsToday">—</p>
+          <p class="detail">Confirmed field service appointments scheduled for today.</p>
+        </article>
+        <article class="dashboard-card">
+          <span class="label">Revenue MTD</span>
+          <p class="value" id="revenueMtd">—</p>
+          <p class="detail">Paid invoice value captured this month.</p>
+        </article>
+        <article class="dashboard-card">
+          <span class="label">Overdue invoices</span>
+          <p class="value" id="overdueInvoices">—</p>
+          <p class="detail">Open invoices past due date requiring follow-up.</p>
+        </article>
+      </section>
+
+      </section>
+
+      <section class="dashboard-section" id="lead-pipeline">
+        <div class="dashboard-panel">
+          <div class="section-heading">
+            <h2>Lead pipeline</h2>
+            <span class="section-note">Kanban or table view. Slide-over lead detail, assign rep, update status, add notes, convert to booking.</span>
+          </div>
+          <pre>Lead pipeline view placeholder: new, contacted, quoted, won, lost.</pre>
+        </div>
+      </section>
+
+      <section class="dashboard-section" id="calendar">
+        <div class="dashboard-panel">
+          <div class="section-heading">
+            <h2>Booking calendar</h2>
+            <span class="section-note">Weekly / daily view with filters for technician, service type, status.</span>
+          </div>
+          <pre>Calendar placeholder: schedule, assign/reassign technicians, reschedule via drag.</pre>
+        </div>
+      </section>
+
+      <section class="dashboard-section" id="clients">
+        <div class="dashboard-panel">
+          <div class="section-heading">
+            <h2>Clients</h2>
+            <span class="section-note">Searchable customer list with profile, service history, invoices, contracts.</span>
+          </div>
+          <pre>Clients panel placeholder: click for full profile and account details.</pre>
+        </div>
+      </section>
+
+      <section class="dashboard-section" id="organizations">
+        <div class="dashboard-panel">
+          <div class="section-heading">
+            <h2>Organizations</h2>
+            <span class="section-note">Org list with sites, users, contracts, billing. Add/edit org and invite users.</span>
+          </div>
+          <pre>Organizations panel placeholder: manage billing and organisational contacts.</pre>
+        </div>
+      </section>
+
+      <section class="dashboard-section" id="technicians">
+        <div class="dashboard-panel">
+          <div class="section-heading">
+            <h2>Technicians</h2>
+            <span class="section-note">Technician list with job count, completion rate, profile, qualifications, schedule.</span>
+          </div>
+          <pre>Technician panel placeholder: onboard, assign, review performance.</pre>
+        </div>
+      </section>
+
+      <section class="dashboard-section" id="reports">
+        <div class="dashboard-panel">
+          <div class="section-heading">
+            <h2>Reports</h2>
+            <span class="section-note">Service reports filtered by technician, site, date. Full report view with photos and findings.</span>
+          </div>
+          <pre>Reports panel placeholder: review service findings, recommendations and supporting photos.</pre>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const apiBase = document.querySelector('meta[name="aws-api-base"]')?.content || `${window.location.origin}/api`;
+    const summaryUrl = `${apiBase}/analytics/summary`;
+
+    function formatTrend(points) {
+      return points.map(point => `${point.label}: ${point.value}`).join('\n');
+    }
+
+    function badgeClass(status) {
+      if (status === 'new') return 'status-new';
+      if (status === 'draft') return 'status-draft';
+      return 'status-other';
+    }
+
+    async function loadDashboard() {
+      const setText = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value ?? '—';
+      };
+
+      try {
+        const token = localStorage.getItem('ascpest_token');
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+        const response = await fetch(summaryUrl, { headers });
+        if (!response.ok) {
+          if (response.status === 401 || response.status === 403) {
+            document.getElementById('recentLeadsBody').innerHTML = '<tr><td colspan="5">Access denied. Sign in and store your bearer token in localStorage as <code>ascpest_token</code>.</td></tr>';
+            setText('leadsTrend', 'Access denied.');
+            setText('quotesTrend', 'Access denied.');
+            return;
+          }
+          throw new Error(`HTTP ${response.status}`);
+        }
+        const data = await response.json();
+
+        setText('totalLeads', data.total_leads ?? '—');
+        setText('bookingsToday', data.bookings_today ?? '—');
+        setText('revenueMtd', typeof data.revenue_mtd === 'number' ? `R${data.revenue_mtd.toLocaleString()}` : data.revenue_mtd ?? '—');
+        setText('overdueInvoices', data.overdue_invoices ?? '—');
+        setText('activeContracts', data.active_contracts ?? '—');
+        setText('technicianCount', data.technician_count ?? '—');
+        setText('leadsTrend', formatTrend(data.leads_last_7_days ?? []));
+        setText('quotesTrend', formatTrend(data.quotes_last_7_days ?? []));
+
+        const body = document.getElementById('recentLeadsBody');
+        body.innerHTML = '';
+        if (!Array.isArray(data.recent_leads) || !data.recent_leads.length) {
+          body.innerHTML = '<tr><td colspan="5">No recent leads found.</td></tr>';
+          return;
+        }
+
+        for (const lead of data.recent_leads) {
+          const serviceList = Array.isArray(lead.service_interest) ? lead.service_interest.join(', ') : '-';
+          const date = new Date(lead.created_at).toLocaleString();
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${lead.reference}</td>
+            <td>${lead.source}</td>
+            <td><span class="badge ${badgeClass(lead.status)}">${lead.status}</span></td>
+            <td>${serviceList || '-'}</td>
+            <td>${date}</td>
+          `;
+          body.appendChild(row);
+        }
+      } catch (error) {
+        setText('leadsTrend', 'Unable to load analytics.');
+        setText('quotesTrend', 'Unable to load analytics.');
+        document.getElementById('recentLeadsBody').innerHTML = '<tr><td colspan="5">Unable to load recent leads.</td></tr>';
+        console.error('Dashboard load failed:', error);
+      }
+    }
+
+    loadDashboard();
+  </script>
+</body>
+</html>
